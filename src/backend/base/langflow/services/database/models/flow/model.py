@@ -10,17 +10,18 @@ import emoji
 from emoji import purely_emoji  # type: ignore
 from fastapi import HTTPException, status
 from pydantic import field_serializer, field_validator
-from sqlalchemy import UniqueConstraint, Text
+from sqlalchemy import Text, UniqueConstraint
 from sqlmodel import JSON, Column, Field, Relationship, SQLModel
 
 from langflow.schema import Data
 from langflow.services.database.models.vertex_builds.model import VertexBuildTable
 
 if TYPE_CHECKING:
+    from langflow.services.database.models import TransactionTable
     from langflow.services.database.models.folder import Folder
     from langflow.services.database.models.message import MessageTable
+    from langflow.services.database.models.subscription.model import Subscription
     from langflow.services.database.models.user import User
-    from langflow.services.database.models import TransactionTable
 
 
 class FlowBase(SQLModel):
@@ -147,6 +148,7 @@ class Flow(FlowBase, table=True):  # type: ignore
     messages: List["MessageTable"] = Relationship(back_populates="flow")
     transactions: List["TransactionTable"] = Relationship(back_populates="flow")
     vertex_builds: List["VertexBuildTable"] = Relationship(back_populates="flow")
+    subscriptions: List["Subscription"] = Relationship(back_populates="flow")
 
     def to_data(self):
         serialized = self.model_dump()
