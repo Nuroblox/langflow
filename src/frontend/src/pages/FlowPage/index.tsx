@@ -162,6 +162,18 @@ export default function FlowPage({ view }: { view?: boolean }): JSX.Element {
             </main>
           </div>
         )}
+        {ENABLE_BRANDING && version && (
+          <a
+            target={"_blank"}
+            href="https://nuroblox.ai"
+            className="langflow-page-icon"
+          >
+            <div className="mt-1">Powered by</div>
+            <div>
+              <img src="https://nuroblox.ai/assets/images/nuro-logo.png" style="width=100px; padding:10px;"/>
+            </div>
+          </a>
+        )}
       </div>
       {blocker.state === "blocked" && (
         <>
