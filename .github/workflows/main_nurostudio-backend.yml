@@ -26,10 +26,23 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-      
+
+      - name: Navigate to the backend directory
+        run: |
+          echo "Navigating to the backend directory..."
+          cd src/backend/base
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
-        
+        run: |
+          echo "Installing Python dependencies for the backend..."
+          pip install .
+
+      - name: Run backend server using Uvicorn
+        run: |
+          echo "Starting the backend server with Uvicorn..."
+          uvicorn langflow.main:setup_app --host 127.0.0.1 --port 7860 --reload --log-level error --workers 1 --loop asyncio
+          echo "Backend server started successfully."
+
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
@@ -49,7 +62,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -59,7 +72,6 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
